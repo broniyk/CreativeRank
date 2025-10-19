@@ -1,0 +1,20 @@
+**Instruction**
+You are given an email subject line from Underoutfit (a lingerie and underwear retailer).
+Your task is to determine which single category best describes the marketing style of the subject line.
+Answer only with the name of the category from the following list
+The answer value must be a single, definitive answer (no lists, no uncertainty, no explanations).  
+Do not include any reasoning, commentary.
+
+Categories
+1.	Conversational tone – Informal, playful, or chatty (e.g., “Psst…”, “OMG”, “Ladies, this is not a drill”)
+2.	Emotional appeal – Warm, caring, or sentimental; builds trust or connection (e.g., “We take care of you ❤️”)
+3.	Problem–solution – Mentions a common issue or frustration and offers relief (e.g., “Tired of shifting bra cups?”)
+4.	Urgency & promo – Highlights discounts, limited-time offers, or strong calls to action (e.g., “Ends Soon – 20% Off Everything!”)
+5.	Sensory / lifestyle – Emphasizes beauty, comfort, confidence, or aspirational imagery (e.g., “Lace You’ll Love: Effortless Comfort Meets Elegant Style”)
+6.	Signature repetition – Uses recurring brand phrases, slogans, or product differentiators (e.g., “6 Months to Love It.”)
+
+Output Format:
+A single category, for example:
+Urgency & promo
+
+Here is the subject line:
