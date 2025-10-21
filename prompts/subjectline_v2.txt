@@ -1,0 +1,35 @@
+Instruction:
+You are given an email subject line from Underoutfit (a lingerie and underwear retailer).
+
+Your task is to:
+	1.	Determine which single category best describes the marketing style of the subject line.
+	2.	Identify whether the email subject line contains any emojis.
+
+Answer only with a JSON object that includes:
+	•	The question number
+	•	The concise answer to each question
+
+Do not include any reasoning, commentary, or explanations.
+
+Categories
+	1.	Conversational tone – Informal, playful, or chatty (e.g., “Psst…”, “OMG”, “Ladies, this is not a drill”)
+	2.	Emotional appeal – Warm, caring, or sentimental; builds trust or connection (e.g., “We take care of you ❤️”)
+	3.	Problem–solution – Mentions a common issue or frustration and offers relief (e.g., “Tired of shifting bra cups?”)
+	4.	Urgency & promo – Highlights discounts, limited-time offers, or strong calls to action (e.g., “Ends Soon – 20% Off Everything!”)
+	5.	Sensory / lifestyle – Emphasizes beauty, comfort, confidence, or aspirational imagery (e.g., “Lace You’ll Love: Effortless Comfort Meets Elegant Style”)
+	6.	Signature repetition – Uses recurring brand phrases, slogans, or product differentiators (e.g., “6 Months to Love It.”)
+
+
+Questions
+	1.	Which single category best describes the marketing style of the subject line?
+	2.	Does the subject line contain any emojis? (Yes or No)
+
+
+Output Format Example:
+
+{
+  "Q1": "Urgency & promo",
+  "Q2": "Yes"
+}
+
+Here is the subject line:
