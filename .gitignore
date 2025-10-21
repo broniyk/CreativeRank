@@ -1,0 +1,44 @@
+# --- 🧩 Python cache & build artifacts ---
+__pycache__/
+*.py[cod]
+*_cache/
+.pytest_cache/
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+dist/
+build/
+
+# --- 📒 Jupyter Notebook checkpoints ---
+.ipynb_checkpoints/
+notebooks/catboost_info/
+
+# --- 🧪 Data, models & outputs ---
+data/
+outputs/
+outputs_old/
+
+# --- ⚙️ Environment & dependency files ---
+.env
+.venv/
+venv/
+env/
+*.env
+
+# --- 🧠 IDEs & editors ---
+# VS Code / Cursor
+.vscode/
+# JetBrains IDEs (PyCharm, IntelliJ, etc.)
+.idea/
+
+# --- 🧹 System / OS files ---
+.DS_Store
+Thumbs.db
+
+# --- 🔬 Project-specific cache or generated code ---
+features/__pycache__/
+
+# ============================================
+# End of file
+# ============================================
