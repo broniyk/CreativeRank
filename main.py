@@ -14,7 +14,7 @@ def main():
         subject_line_prompt="subjectline_v2.txt",
         creative_model="gpt-4o",
         subject_line_model="gpt-5",
-        output_file="temp_feats.csv",
+        save_output="run_20251021",
     )
     print(res)
 

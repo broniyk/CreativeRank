@@ -71,45 +71,40 @@ async def extract_subject_line_features(
     max_tokens: int = 300,
     temperature: float = 0.7,
 ) -> pd.DataFrame:
-    """
-    Internal async function to process subject lines concurrently.
-    """
     client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     
-    # Create tasks for all subject lines
-    tasks = []
-    ids = list(subject_lines.keys())
-    
-    for sbl_id in ids:
-        tasks.append(
-            analyze_subject_line_with_gpt(
-                subject_line=subject_lines[sbl_id],
-                prompt=prompt,
-                client=client,
-                model=model,
-                max_tokens=max_tokens,
-                temperature=temperature,
+    try:
+        # Create tasks for all subject lines
+        tasks = []
+        ids = list(subject_lines.keys())
+        
+        for sbl_id in ids:
+            tasks.append(
+                analyze_subject_line_with_gpt(
+                    subject_line=subject_lines[sbl_id],
+                    prompt=prompt,
+                    client=client,
+                    model=model,
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                )
             )
-        )
-       
-    
-    # Process all tasks concurrently with progress bar
-    results_list = []
-    for result in await async_tqdm.gather(*tasks, desc="Categorizing"):
-        results_list.append(result)
-    
-    # Each item in results_list is a JSON string with feature names and their values.
+        
+        # Process all tasks concurrently with progress bar
+        results_list = []
+        for result in await async_tqdm.gather(*tasks, desc="Categorizing"):
+            results_list.append(result)
+        
+        results_dict = {}
+        for sbl_id, result_json in zip(ids, results_list):
+            try:
+                features = json_markdown_to_dict(result_json)
+            except Exception as e:
+                features = {"error": str(e)}
+            results_dict[sbl_id] = features
 
-    results_dict = {}
-    # Use the same ordering as subject_lines.keys()
-    for sbl_id, result_json in zip(ids, results_list):
-        try:
-            features = json_markdown_to_dict(result_json)
-        except Exception as e:
-            # If parsing fails, assign error row
-            features = {"error": str(e)}
-        results_dict[sbl_id] = features
-
-    # Now, convert to DataFrame with id as index and features as columns
-    df = pd.DataFrame.from_dict(results_dict, orient="index")
-    return df
+        df = pd.DataFrame.from_dict(results_dict, orient="index")
+        df.index.name = "id"
+        return df
+    finally:
+        await client.close()  # Close client when done

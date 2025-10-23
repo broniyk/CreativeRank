@@ -17,6 +17,7 @@ load_dotenv()
 async def analyze_image_with_gpt(
     image_path: str,
     prompt: str,
+    client: AsyncOpenAI,
     model: str = "gpt-4o",
     max_tokens: int = 300,
     temperature: float = 0.7,
@@ -35,8 +36,6 @@ async def analyze_image_with_gpt(
     Returns:
         dict: Contains image path, prompt, and GPT response
     """
-    client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
     try:
         # Encode the image
         base64_image = encode_image(image_path)
@@ -76,6 +75,7 @@ async def analyze_image_with_gpt(
 async def analyze_image_with_claude(
     image_path: str,
     prompt: str,
+    client: Anthropic,
     model: str = "claude-sonnet-4-5",
     max_tokens: int = 300,
     temperature: float = 0.7,
@@ -93,7 +93,6 @@ async def analyze_image_with_claude(
     Returns:
         dict: Contains image path, prompt, and Claude response
     """
-    client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
     try:
         # Encode the image
@@ -134,6 +133,7 @@ async def analyze_image_with_claude(
 async def analyze_image(
     image_path: str,
     prompt: str,
+    client: AsyncOpenAI | Anthropic,  # Accept client as parameter
     model: str = "gpt-4o",
     max_tokens: int = 300,
     temperature: float = 0.7,
@@ -155,11 +155,11 @@ async def analyze_image(
 
     if model.startswith("claude"):
         result = await analyze_image_with_claude(
-            image_path, prompt, model, max_tokens, temperature
+            image_path, prompt, client, model, max_tokens, temperature
         )
     elif model.startswith("gpt"):
         result = await analyze_image_with_gpt(
-            image_path, prompt, model, max_tokens, temperature
+            image_path, prompt, client, model, max_tokens, temperature
         )
 
     return result
@@ -201,6 +201,7 @@ async def extract_creative_features(
             response = await analyze_image(
                 image_path=image_path,
                 prompt=prompt,
+                client=client,  # Add this line
                 model=model,
                 max_tokens=max_tokens,
                 temperature=temperature,
@@ -224,28 +225,39 @@ async def extract_creative_features(
         model = model_config["model"]
         temperature = model_config.get("temperature", 0.7)
         max_tokens = model_config.get("max_tokens", 300)
-        # Process all images concurrently with progress bar
-        tasks = [
-            process_image(image_path, model, temperature, max_tokens)
-            for _, image_path in creatives.items()
-        ]
-        creative_ids = list(creatives.keys())
+        
+        # Create client once per model type
+        if model.startswith("claude"):
+            client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        else:
+            client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        
+        try:
+            # Process all images concurrently with progress bar
+            tasks = [
+                process_image(image_path, model, temperature, max_tokens)
+                for _, image_path in creatives.items()
+            ]
+            creative_ids = list(creatives.keys())
 
-        results_list = []
-        for result in await async_tqdm.gather(*tasks, desc="Analyzing images"):
-            results_list.append(result)
+            results_list = []
+            for result in await async_tqdm.gather(*tasks, desc="Analyzing images"):
+                results_list.append(result)
 
-        results_dict = {}
-        # Use the same ordering as subject_lines.keys()
-        for creative_id, result_json in zip(creative_ids, results_list):
-            try:
-                features = json_markdown_to_dict(result_json)
-            except Exception as e:
-                # If parsing fails, assign error row
-                features = {"error": str(e)}
-            results_dict[creative_id] = features
-        # Now, convert to DataFrame with id as index and features as columns
-        df = pd.DataFrame.from_dict(results_dict, orient="index")
-        all_models_results[model_name] = df
+            results_dict = {}
+            for creative_id, result_json in zip(creative_ids, results_list):
+                try:
+                    features = json_markdown_to_dict(result_json)
+                except Exception as e:
+                    features = {"error": str(e)}
+                results_dict[creative_id] = features
+            
+            df = pd.DataFrame.from_dict(results_dict, orient="index")
+            df.index.name = "id"
+            all_models_results[model_name] = df
+        finally:
+            # Close the client after processing all images for this model
+            if hasattr(client, 'close'):
+                await client.close()
 
     return all_models_results

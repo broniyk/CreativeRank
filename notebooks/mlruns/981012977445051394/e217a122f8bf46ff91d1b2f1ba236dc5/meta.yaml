@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/broniy/Desktop/CreativeRank/notebooks/mlruns/981012977445051394/e217a122f8bf46ff91d1b2f1ba236dc5/artifacts
+end_time: 1761136945671
+entry_point_name: ''
+experiment_id: '981012977445051394'
+lifecycle_stage: active
+run_id: e217a122f8bf46ff91d1b2f1ba236dc5
+run_name: pn_ratio_1_all_feats
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761136706684
+status: 3
+tags: []
+user_id: broniy

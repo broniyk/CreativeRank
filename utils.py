@@ -10,8 +10,9 @@ import base64
 import matplotlib.pyplot as plt
 import yaml
 from PIL import Image
+import pandas as pd
 
-from settings import PROMPTS_FOLDER
+from settings import PROMPTS_FOLDER, IMAGES_FOLDER, DATA_FOLDER
 
 
 def read_prompt(prompt_name: str) -> str:
@@ -54,7 +55,7 @@ def read_prompt(prompt_name: str) -> str:
         raise IOError(f"Error reading prompt file '{prompt_name}': {e}")
 
 
-def display_image_by_path(image_path):
+def display_creative_image(creative_id: str=None, image_name: str=None):
     """
     Display a single image given its file path and return the matplotlib figure.
 
@@ -64,6 +65,15 @@ def display_image_by_path(image_path):
     Returns:
         matplotlib.figure.Figure: The figure object displaying the image, or None if error.
     """
+    if creative_id:
+        ds = pd.read_csv(DATA_FOLDER/"dataset.csv").set_index("id")
+        image_name = ds.loc[creative_id, "image_name"]
+        image_path = os.path.join(IMAGES_FOLDER, image_name)
+    elif image_name:
+        image_path = os.path.join(IMAGES_FOLDER, image_name)
+    else:
+        raise ValueError("Either creative_id or image_name must be provided")
+
     try:
         img = plt.imread(image_path)
         fig = plt.figure(figsize=(5, 5))

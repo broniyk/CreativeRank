@@ -1,0 +1,6 @@
+artifact_location: file:///Users/broniy/Desktop/CreativeRank/notebooks/mlruns/738836287004510386
+creation_time: 1761139879288
+experiment_id: '738836287004510386'
+last_update_time: 1761139879288
+lifecycle_stage: active
+name: RankerGridSearch
