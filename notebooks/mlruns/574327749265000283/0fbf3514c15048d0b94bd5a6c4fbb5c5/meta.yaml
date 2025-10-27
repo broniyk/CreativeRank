@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/broniy/Desktop/CreativeRank/notebooks/mlruns/574327749265000283/0fbf3514c15048d0b94bd5a6c4fbb5c5/artifacts
+deleted_time: 1761469320223
+end_time: 1761469183937
+entry_point_name: ''
+experiment_id: '574327749265000283'
+lifecycle_stage: deleted
+run_id: 0fbf3514c15048d0b94bd5a6c4fbb5c5
+run_name: expanding_window
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761469176277
+status: 4
+tags: []
+user_id: broniy

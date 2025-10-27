@@ -1,8 +1,9 @@
 artifact_uri: file:///Users/broniy/Desktop/CreativeRank/notebooks/mlruns/925098199988117784/5b1cdd3c2aa341b7b7eaa5774e8007c3/artifacts
+deleted_time: 1761224229781
 end_time: 1761152362022
 entry_point_name: ''
 experiment_id: '925098199988117784'
-lifecycle_stage: active
+lifecycle_stage: deleted
 run_id: 5b1cdd3c2aa341b7b7eaa5774e8007c3
 run_name: ranker_pn_search_0
 source_name: ''
