@@ -39,6 +39,9 @@ Thumbs.db
 # --- 🔬 Project-specific cache or generated code ---
 features/__pycache__/
 
+# --- MLflow runs ---
+notebooks/mlruns/
+
 # ============================================
 # End of file
 # ============================================
