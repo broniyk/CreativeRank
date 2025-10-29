@@ -1,8 +1,4 @@
-import asyncio
 import pandas as pd
-import os
-from utils import read_prompt
-from features.creative_features import extract_creative_features
 from pipelines.features_pipeline import run_feature_extraction_pipeline
 
 
@@ -14,7 +10,7 @@ def main():
         subject_line_prompt="subjectline_v2.txt",
         creative_model="gpt-4o",
         subject_line_model="gpt-5",
-        save_output="run_20251021",
+        save_output="run_20251029",
     )
     print(res)
 

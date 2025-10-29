@@ -55,7 +55,7 @@ def read_prompt(prompt_name: str) -> str:
         raise IOError(f"Error reading prompt file '{prompt_name}': {e}")
 
 
-def display_creative_image(creative_id: str=None, image_name: str=None):
+def display_creative_image(experiment_id: str=None, creative_id: str=None, image_name: str=None):
     """
     Display a single image given its file path and return the matplotlib figure.
 
@@ -65,26 +65,38 @@ def display_creative_image(creative_id: str=None, image_name: str=None):
     Returns:
         matplotlib.figure.Figure: The figure object displaying the image, or None if error.
     """
-    if creative_id:
-        ds = pd.read_csv(DATA_FOLDER/"dataset.csv").set_index("id")
-        image_name = ds.loc[creative_id, "image_name"]
-        image_path = os.path.join(IMAGES_FOLDER, image_name)
+    ds = pd.read_csv(DATA_FOLDER / "dataset.csv").set_index("id")
+    if experiment_id:
+        image_names = ds.query(f"experiment_id_creative == '{experiment_id}'")["image_name"].tolist()
+        fig, axes = plt.subplots(1, len(image_names), figsize=(4 * len(image_names), 4))
+        axes = [axes] if len(image_names) == 1 else axes
+        for ax, img_name in zip(axes, image_names):
+            img_path = os.path.join(IMAGES_FOLDER, img_name)
+            try:
+                ax.imshow(plt.imread(img_path))
+                ax.set_title(img_name, fontsize=8)
+            except Exception:
+                ax.set_title(f"Error: {img_name}", fontsize=8)
+            ax.axis("off")
+        plt.tight_layout()
+        plt.close(fig)
+        return fig
+    elif creative_id:
+        img_name = ds.loc[creative_id, "image_name"]
+        img_path = os.path.join(IMAGES_FOLDER, img_name)
     elif image_name:
-        image_path = os.path.join(IMAGES_FOLDER, image_name)
+        img_path = os.path.join(IMAGES_FOLDER, image_name)
     else:
-        raise ValueError("Either creative_id or image_name must be provided")
-
+        raise ValueError("Either experiment_id, creative_id or image_name must be provided")
     try:
-        img = plt.imread(image_path)
-        fig = plt.figure(figsize=(5, 5))
-        ax = fig.add_subplot(111)
-        ax.imshow(img)
-        ax.set_title(os.path.basename(image_path), fontsize=10)
+        fig, ax = plt.subplots(figsize=(5, 5))
+        ax.imshow(plt.imread(img_path))
+        ax.set_title(os.path.basename(img_path), fontsize=10)
         ax.axis("off")
-        plt.close(fig)  # Prevent the figure from displaying immediately
+        plt.close(fig)
         return fig
     except Exception as e:
-        print(f"Error loading image {image_path}: {e}")
+        print(f"Error loading image {img_path}: {e}")
         return None
 
 

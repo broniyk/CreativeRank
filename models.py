@@ -1,3 +1,4 @@
+from this import d
 from typing import List
 
 import pandas as pd
@@ -67,5 +68,21 @@ def get_model(type: str, cat_features: List[int], params: dict = None):
             }
         )
         model = CatBoostRanker(cat_features=cat_features, verbose=True, **params)
-        mlflow.log_params(params)
+        if mlflow.active_run() is not None:
+            mlflow.log_params(params)
         return model
+
+
+def get_catboost_classifier(cat_features: List[int], params: dict = None):
+    model_params = dict(
+        loss_function="Logloss",
+        eval_metric="AUC",
+        cat_features=cat_features,
+        random_seed=42,
+    )
+    if params is not None:
+        model_params.update(params)
+    model = CatBoostClassifier(**params)
+    if mlflow.active_run() is not None:
+        mlflow.log_params(model_params)
+    return model

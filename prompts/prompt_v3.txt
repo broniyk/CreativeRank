@@ -38,6 +38,10 @@ Questions:
 8. What is the model's apparent age range? (18-25, 26-35, 36-45, 46-55, 56-90, Unknown)
 9. What is the model's body type? (Ultra-Slim, Slim, Curvy, Athletic, Plus-Size, Big Breast, Unknown)
 10. What is the model’s skin tone? If you are unsure, try auto–white balancing the image. (White, Black, Brown, Tan, Unknown)
+11. Does this creative contain a call-to-action (CTA) element — such as a button or phrase prompting the user to take an action (e.g., “Shop Now,” “Buy Now,” “Learn More,” “Get Yours,” etc.)? (Yes, No)
+12. How is the model’s body pose positioned in this creative? (Frontal, Three-quarter, Profile, Back, Unknown)
+13. How is the subject framed within the creative? (Close-up, Medium, Full-Body, Wide)
+14. What text appears in this creative, and what does it communicate? (Headline, CTA, Tagline, Informational)
 
 Output Format:
 A single valid JSON object, for example:
