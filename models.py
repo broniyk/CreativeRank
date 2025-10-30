@@ -1,4 +1,3 @@
-from this import d
 from typing import List
 
 import pandas as pd

@@ -42,6 +42,8 @@ Questions:
 12. How is the model’s body pose positioned in this creative? (Frontal, Three-quarter, Profile, Back, Unknown)
 13. How is the subject framed within the creative? (Close-up, Medium, Full-Body, Wide)
 14. What text appears in this creative, and what does it communicate? (Headline, CTA, Tagline, Informational)
+15. What is the hair color of the main person featured in this creative? (Blonde, Light Brown, Dark Brown, Black, Red, Gray/White, Colored / Unnatural, Not visible)
+16. What is the lighting intensity in this creative? (Bright, Medium, Low)
 
 Output Format:
 A single valid JSON object, for example:
