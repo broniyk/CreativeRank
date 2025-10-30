@@ -41,7 +41,7 @@ features/__pycache__/
 
 # --- MLflow runs ---
 notebooks/mlruns/
-
+mlruns/
 # ============================================
 # End of file
 # ============================================
