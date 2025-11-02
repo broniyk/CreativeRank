@@ -10,7 +10,7 @@ def main():
         subject_line_prompt="subjectline_v2.txt",
         creative_model="gpt-4o",
         subject_line_model="gpt-5",
-        save_output="run_20251029",
+        save_output="run_20251102",
     )
     print(res)
 

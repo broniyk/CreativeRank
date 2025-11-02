@@ -42,6 +42,7 @@ features/__pycache__/
 # --- MLflow runs ---
 notebooks/mlruns/
 mlruns/
+notebooks/*.cbm
 # ============================================
 # End of file
 # ============================================
