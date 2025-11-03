@@ -1,92 +1,7 @@
 import pandas as pd
 from datetime import datetime
 from settings import DATA_FOLDER
-from typing import Literal
-
-USER_COLS = [
-    "RECIPIENT_ID",
-    "COUNTRY",
-    "REGION",
-    "LATEST_CLICK_CLIENT_TYPE",
-    "LATEST_CLICK_CLIENT_NAME",
-    "LATEST_CLICK_CLIENT_OS_FAMILY",
-    "TOTAL_ORDERS_VALUE",
-    "AVG_ORDER_VALUE",
-    "LAST_ORDER_VALUE",
-    "MONTHS_SINCE_FIRST_ACTIVE",
-    "CLICK",
-    "FIRST_UTM_SOURCE",
-    "FIRST_UTM_CONTENT",
-    "FIRST_UTM_CAMPAIGN",
-    "LAST_UTM_SOURCE",
-    "LAST_UTM_CONTENT",
-    "LAST_UTM_CAMPAIGN",
-    "CITY",
-    "TIMEZONE",
-]
-VARIATION_COLS = [
-    "Q1_CREATIVE",
-    "Q2_CREATIVE",
-    "Q3",
-    "Q4",
-    "Q5",
-    "Q6",
-    "Q7",
-    "Q8",
-    "Q9",
-    "Q10",
-    "Q11",
-    "Q12",
-    "Q13",
-    "Q14",
-    "Q15",
-    "Q16",
-    "Q1_SBL",
-    "Q2_SBL",
-]
-
-CATEGORICAL_COLS = [
-    "COUNTRY",
-    "REGION",
-    "CITY",
-    "TIMEZONE",
-    "LATEST_CLICK_CLIENT_TYPE",
-    "LATEST_CLICK_CLIENT_NAME",
-    "LATEST_CLICK_CLIENT_OS_FAMILY",
-    "FIRST_UTM_SOURCE",
-    "FIRST_UTM_CONTENT",
-    "FIRST_UTM_CAMPAIGN",
-    "LAST_UTM_SOURCE",
-    "LAST_UTM_CONTENT",
-    "LAST_UTM_CAMPAIGN",
-    "Q1_CREATIVE",
-    "Q2_CREATIVE",
-    "Q3",
-    "Q4",
-    "Q5",
-    "Q6",
-    "Q7",
-    "Q8",
-    "Q9",
-    "Q10",
-    "Q11",
-    "Q12",
-    "Q13",
-    "Q14",
-    "Q15",
-    "Q16",
-    "Q1_SBL",
-    "Q2_SBL",
-]
-
-NUMERICAL_COLS = [
-    "TOTAL_ORDERS_VALUE",
-    "AVG_ORDER_VALUE",
-    "LAST_ORDER_VALUE",
-    "MONTHS_SINCE_FIRST_ACTIVE",
-]
-
-COLS = CATEGORICAL_COLS + NUMERICAL_COLS
+from typing import Literal, List
 
 
 def get_experiment_data():
@@ -190,7 +105,9 @@ def get_experiment_data():
         right_on=["VARIATION_ID"],
         how="left",
     )
-    users_all_variations["EXPERIMENT_DATE"] = pd.to_datetime(users_all_variations["EXPERIMENT_DATE"])
+    users_all_variations["EXPERIMENT_DATE"] = pd.to_datetime(
+        users_all_variations["EXPERIMENT_DATE"]
+    )
     return users_all_variations
 
 
@@ -200,44 +117,42 @@ def split_experiment_train_test_val_data(
     n_last_val: int = 2,
     n_last_train: int = None,
 ):
-        data["EXPERIMENT_DATE"] = pd.to_datetime(data["EXPERIMENT_DATE"])
+    data["EXPERIMENT_DATE"] = pd.to_datetime(data["EXPERIMENT_DATE"])
 
-        # Sort unique experiments by date
-        experiment_order = (
-            data[["EXPERIMENT_ID", "EXPERIMENT_DATE"]]
-            .sort_values("EXPERIMENT_DATE")
-            .drop_duplicates()
-            .reset_index(drop=True)
-        )
-        test_tail_idx = -n_last_test
-        val_tail_idx = -(n_last_test + n_last_val)
-        train_tail_idx = -(n_last_test + n_last_val + n_last_train ) if n_last_train else -len(experiment_order)
-        # Get last two for test, others for train
-        test_experiments = experiment_order.tail(n_last_test)["EXPERIMENT_ID"]
-        val_experiments = experiment_order.iloc[val_tail_idx:test_tail_idx][
-            "EXPERIMENT_ID"
-        ]
+    # Sort unique experiments by date
+    experiment_order = (
+        data[["EXPERIMENT_ID", "EXPERIMENT_DATE"]]
+        .sort_values("EXPERIMENT_DATE")
+        .drop_duplicates()
+        .reset_index(drop=True)
+    )
+    test_tail_idx = -n_last_test
+    val_tail_idx = -(n_last_test + n_last_val)
+    train_tail_idx = (
+        -(n_last_test + n_last_val + n_last_train)
+        if n_last_train
+        else -len(experiment_order)
+    )
+    # Get last two for test, others for train
+    test_experiments = experiment_order.tail(n_last_test)["EXPERIMENT_ID"]
+    val_experiments = experiment_order.iloc[val_tail_idx:test_tail_idx]["EXPERIMENT_ID"]
 
-        train_experiments = experiment_order.iloc[train_tail_idx:val_tail_idx]["EXPERIMENT_ID"]
+    train_experiments = experiment_order.iloc[train_tail_idx:val_tail_idx][
+        "EXPERIMENT_ID"
+    ]
 
-        # Select rows for train/test
-        train_data = data[
-            data["EXPERIMENT_ID"].isin(train_experiments)
-        ]
-        # For validation set
-        val_data_raw = data[
-            data["EXPERIMENT_ID"].isin(val_experiments)
-        ]
-        val_data = val_data_raw.groupby(["EXPERIMENT_ID", "RECIPIENT_ID"]).filter(
-            lambda g: g["CLICK"].max() == 1
-        )
+    # Select rows for train/test
+    train_data = data[data["EXPERIMENT_ID"].isin(train_experiments)]
+    # For validation set
+    val_data_raw = data[data["EXPERIMENT_ID"].isin(val_experiments)]
+    val_data = val_data_raw.groupby(["EXPERIMENT_ID", "RECIPIENT_ID"]).filter(
+        lambda g: g["CLICK"].max() == 1
+    )
 
-        # For test set
-        test_data_raw = data[
-            data["EXPERIMENT_ID"].isin(test_experiments)
-        ]
-        test_data = test_data_raw.groupby(["EXPERIMENT_ID", "RECIPIENT_ID"]).filter(
-            lambda g: g["CLICK"].max() == 1
-        )
-        return train_data, val_data, test_data
+    # For test set
+    test_data_raw = data[data["EXPERIMENT_ID"].isin(test_experiments)]
+    test_data = test_data_raw.groupby(["EXPERIMENT_ID", "RECIPIENT_ID"]).filter(
+        lambda g: g["CLICK"].max() == 1
+    )
+    return train_data, val_data, test_data
 

@@ -15,8 +15,8 @@ import pandas as pd
 from dotenv import load_dotenv
 from loguru import logger
 
-from features.creative_features import extract_creative_features
-from features.subject_line_features import extract_subject_line_features
+from pipelines.creative_features import extract_creative_features
+from pipelines.subject_line_features import extract_subject_line_features
 from settings import IMAGES_FOLDER, OUTPUTS_FOLDER
 from utils import read_prompt
 
@@ -73,7 +73,9 @@ def run_feature_extraction_pipeline(
         logger.info(
             f"Subject line features already extracted and saved to {OUTPUTS_FOLDER/save_output/"sbl_feats.csv"}"
         )
-        sbl_feats = pd.read_csv(OUTPUTS_FOLDER / save_output / "sbl_feats.csv", index_col="id")
+        sbl_feats = pd.read_csv(
+            OUTPUTS_FOLDER / save_output / "sbl_feats.csv", index_col="id"
+        )
 
     if not os.path.exists(OUTPUTS_FOLDER / save_output / "feats_df.csv"):
         feats_df = pd.DataFrame(index=ds["id"])

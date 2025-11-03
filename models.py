@@ -35,41 +35,26 @@ def get_pooled_dataset(
         .astype("category")
         .cat.codes.values
     )
-    X, y = data_df_sorted[cols], data_df_sorted["CLICK"]
+    X, y = data_df_sorted[list(cols)], data_df_sorted["CLICK"]
     cat_features = [X.columns.get_loc(col) for col in cat_cols if col in X.columns]
 
     pool = Pool(X, label=y, cat_features=cat_features, group_id=group_ids)
     return data_df_sorted, pool, group_ids, X, y
 
 
-def get_model(type: str, cat_features: List[int], params: dict = None):
-    if type == "classifier":
-        model = CatBoostClassifier(
-            iterations=1000,
-            learning_rate=0.03,
-            depth=6,
-            loss_function="Logloss",
-            eval_metric="AUC",
-            cat_features=cat_features,
-            random_seed=42,
-            verbose=100,
-            # early_stopping_rounds=500,
-            use_best_model=True,
-        )
-        return model
-    elif type == "ranker":
-        params.update(
-            {
-                "loss_function": "YetiRank",
-                "eval_metric": "MRR",
-                "early_stopping_rounds": 500,
-                "random_seed": 42,
-            }
-        )
-        model = CatBoostRanker(cat_features=cat_features, verbose=True, **params)
-        if mlflow.active_run() is not None:
-            mlflow.log_params(params)
-        return model
+def get_catboost_ranker(cat_features: List[int], params: dict = None):
+    params.update(
+        {
+            "loss_function": "YetiRank",
+            "eval_metric": "MRR",
+            "early_stopping_rounds": 500,
+            "random_seed": 42,
+        }
+    )
+    model = CatBoostRanker(cat_features=cat_features, verbose=True, **params)
+    if mlflow.active_run() is not None:
+        mlflow.log_params(params)
+    return model
 
 
 def get_catboost_classifier(cat_features: List[int], params: dict = None):
