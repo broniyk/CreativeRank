@@ -179,7 +179,7 @@ FEATURES = FeatureRegistry(
 )
 
 FEATURES.register_subset(
-    "creative_10", features=VARIATION_COLS[:10] + NUMERICAL_COLS + SUBJECT_LINE_COLS
+    "creative_14", features=VARIATION_COLS[:14] + NUMERICAL_COLS + SUBJECT_LINE_COLS
 )
 
 FEATURES.register_subset(
@@ -190,12 +190,11 @@ FEATURES.register_subset(
     "cpu_best_feats",
     features=[
         "Q1_SBL",
-        "Q2_CREATIVE",
+        "Q1_CREATIVE",
         "Q4",
         "MONTHS_SINCE_FIRST_ACTIVE",
         "Q3",
         "TOTAL_ORDERS_VALUE",
-        "Q1_CREATIVE",
         "Q8",
         "AVG_ORDER_VALUE",
         "LAST_ORDER_VALUE",

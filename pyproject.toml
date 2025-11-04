@@ -12,5 +12,7 @@ dependencies = [
     "mlflow>=3.5.1",
     "nbconvert>=7.16.6",
     "pandas>=2.3.3",
+    "pingouin>=0.5.5",
     "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
 ]

@@ -9,7 +9,7 @@ def get_experiment_data():
     non_clicked_df = pd.read_csv(DATA_FOLDER / "processed/non_clicked_large.csv")
 
     variations_df = (
-        pd.read_csv(DATA_FOLDER / "processed/feats_df.csv")
+        pd.read_csv(DATA_FOLDER / "processed/feats_old_df.csv")
         .rename(columns={"id": "VARIATION_ID"})
         .fillna("UNK")
     )
